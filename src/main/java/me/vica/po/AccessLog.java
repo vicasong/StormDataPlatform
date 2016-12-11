@@ -2,13 +2,14 @@ package me.vica.po;
 
 import me.vica.tools.LogParser;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * The AccessLog Object Entity
  * Created by Vica-tony on 10/31/2016.
  */
-public class AccessLog {
+public class AccessLog implements Serializable {
     // The Json Template Like This Blow
     //{
     // "time_local":"30/Sep/2016:00:10:38 +0800",

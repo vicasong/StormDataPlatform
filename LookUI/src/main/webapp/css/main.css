@@ -1,0 +1,33 @@
+.my-main-div{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.my-main-div .my-opt-div{
+    width: 50%;
+    margin: 50px auto 10px auto;
+}
+
+.my-main-div .my-btn-div{
+    margin-bottom: 30px;
+}
+
+.my-main-div .my-btn-div button{
+    border: solid 1px #004e63;
+    background-color: white;
+    color: #121219;
+    height: 25px;
+    width: 80px;
+    margin-left: 8px;
+}
+
+.my-main-div .my-btn-div button :hover{
+    background-color: #d6dcdc;
+    color: #191918;
+}
+
+.my-main-div .my-btn-div button :active {
+    background-color: #444244;
+    color: #cfcfce;
+}

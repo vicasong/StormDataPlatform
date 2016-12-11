@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+    <!--<script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>-->
+    <!--<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>-->
+    <!--<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>-->
+    <script src="libs/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="libs/highcharts.js" type="text/javascript"></script>
+    <script src="libs/modules/exporting.js" type="text/javascript"></script>
+    <script src="script/main.js" type="text/javascript"></script>
+    <script src="libs/themes/dark-unica.js" type="text/javascript"></script>
+    <!--<script src="http://cdn.hcharts.cn/highcharts/themes/dark-unica.js" type="text/javascript"></script>-->
+    <link href="css/main.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="my-main-div">
+    <div class="my-opt-div">
+        <select id="year"></select>
+        <span>年</span>
+
+        <select id="month"></select>
+        <span>月</span>
+
+        <select id="day"></select>
+        <span>日</span>
+    </div>
+    <div class="my-btn-div">
+        <button id="btn-year" onclick="year_data()">按月显示</button>
+        <button id="btn-month" onclick="month_data()">按天显示</button>
+        <button id="btn-day" onclick="day_data()">按时显示</button>
+        <button id="btn-test" onclick="test_data()">图表测试</button>
+    </div>
+    <div class="my-gp-div">
+        <div id="container" style="min-width: 420px; height: 600px"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function year_data() {
+        var year = $("#year").children("option:selected").get(0).value;
+        service.request("year/"+year, year+"年每月数据总结");
+    };
+    function month_data() {
+        var year = $("#year").children("option:selected").get(0).value;
+        var month = $("#month").children("option:selected").get(0).value;
+        service.request("month/"+year+"/"+month, year + "年" + month + "月每日数据总结");
+    };
+    function day_data() {
+        var year = $("#year").children("option:selected").get(0).value;
+        var month = $("#month").children("option:selected").get(0).value;
+        var day = $("#day").children("option:selected").get(0).value;
+        service.request("day/"+year+"/"+month+"/"+day, year + "年" + month + "月"+day+"日每小时数据总结");
+    };
+
+    function test_data() {
+        service.initChart($("#container"), "Test", ["a","b","c"],
+            [{data:[2,4,1],extra:[3,3,3],name:"X1"},
+                {data:[3,6,2],extra:[6,6,8],name:"X2"}])
+    }
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@
 
     <groupId>me.vica.storm</groupId>
     <artifactId>AccessLogger</artifactId>
+    <packaging>jar</packaging>
     <version>1.0</version>
 
     <dependencies>

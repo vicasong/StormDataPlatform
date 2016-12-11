@@ -7,6 +7,9 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseBasicBolt;
 import org.apache.storm.tuple.Tuple;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -15,14 +18,16 @@ import java.util.Map;
  */
 public class SummaryBolt extends BaseBasicBolt {
 
-    private String url,username,password,tabname;
+    private DBWriter dbWriter ;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context) {
-        url = stormConf.get("mysql.url").toString();
-        username = stormConf.get("mysql.username").toString();
-        password = stormConf.get("mysql.password").toString();
-        tabname = stormConf.get("mysql.tablename").toString();
+        dbWriter = new DBWriter();
+        String url = stormConf.get("mysql.url").toString();
+        String username = stormConf.get("mysql.username").toString();
+        String password = stormConf.get("mysql.password").toString();
+        String tabname = stormConf.get("mysql.tablename").toString();
+        dbWriter.initConnection(url,username,password,tabname);
         super.prepare(stormConf, context);
     }
 
@@ -37,12 +42,13 @@ public class SummaryBolt extends BaseBasicBolt {
         int otherPv = input.getIntegerByField("otherPv");
         String maxMethod = input.getStringByField("maxMethod");
         String maxUser = input.getStringByField("maxUser");
-        DBWriter.write(url, username, password, tabname, time,resource,pv,uv,pv3xx,pv4xx,otherPv,maxMethod,maxUser);
+
+        dbWriter.write(time,resource,pv,uv,pv3xx,pv4xx,otherPv,maxMethod,maxUser);
     }
 
     @Override
     public void cleanup() {
-        DBWriter.close();
+        dbWriter.close();
         super.cleanup();
     }
 

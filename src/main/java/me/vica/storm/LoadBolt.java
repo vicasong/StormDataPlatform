@@ -3,7 +3,6 @@ package me.vica.storm;
 import com.google.gson.JsonParseException;
 import me.vica.po.AccessLog;
 import me.vica.tools.LogParser;
-import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseBasicBolt;
@@ -12,7 +11,6 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.text.SimpleDateFormat;
-import java.util.Map;
 
 /**
  * The Bolt Of AccessLog Json Message Load And First Process
@@ -25,17 +23,23 @@ public class LoadBolt extends BaseBasicBolt {
 
     public void execute(Tuple input, BasicOutputCollector collector) {
         String sourceLine = input.getString(0);
-        if(sourceLine.trim().length() < 1) return;
+        if (sourceLine.trim().length() < 1) return;
         try {
             AccessLog entity = LogParser.parse(sourceLine);
-            collector.emit(new Values(format.format(entity.getTime_local())+" "+entity.getRequest_url(),
-                    entity));
-        }catch (JsonParseException ex){
+            // Only Count The Site Page Resource
+            if (entity!=null && entity.getRequest_url().startsWith("/") && entity.getRequest_url().endsWith("/")) {
+                if(entity.getRequest_url().replace("/","").trim().length()<1){
+                    entity.setRequest_url("/");
+                }
+                collector.emit(new Values(format.format(entity.getTime_local()) + " " + entity.getRequest_url(),
+                        entity));
+            }
+        } catch (JsonParseException ex) {
             // Nothing To Do
         }
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("id","entity"));
+        declarer.declare(new Fields("id", "entity"));
     }
 }

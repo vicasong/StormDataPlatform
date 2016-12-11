@@ -22,6 +22,7 @@ public class CountBolt extends BaseBasicBolt {
     private Map<String, Integer> status = null;
     private Map<String, Integer> method = null;
     private String pvKey = "pv";
+    private String timeKey = null;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context) {
@@ -29,6 +30,18 @@ public class CountBolt extends BaseBasicBolt {
         status = new HashMap<String, Integer>();
         method = new HashMap<String, Integer>();
         super.prepare(stormConf, context);
+    }
+
+    private void clear(){
+        if(counter != null){
+            counter.clear();
+        }
+        if(status != null){
+            status.clear();
+        }
+        if(method != null){
+            method.clear();
+        }
     }
 
     private void countPvUvByIp(AccessLog entity){
@@ -73,8 +86,15 @@ public class CountBolt extends BaseBasicBolt {
     }
 
     public void execute(Tuple input, BasicOutputCollector collector) {
+        String[] idFields = input.getValueByField("id").toString().split(" ");
+        if(!idFields[0].equals(timeKey)){
+            if(timeKey!=null) {
+                clear();
+            }
+            timeKey = idFields[0];
+        }
         AccessLog entity = (AccessLog) input.getValueByField("entity");
-        String timeId = input.getValueByField("id").toString().split(" ")[0];
+        String timeId = idFields[0];
         countPvUvByIp(entity);
         countStatus(entity);
 

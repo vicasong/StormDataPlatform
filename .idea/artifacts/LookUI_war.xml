@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="LookUI:war">
+    <output-path>$PROJECT_DIR$/LookUI/target</output-path>
+    <root id="archive" name="LookUI.war">
+      <element id="artifact" artifact-name="LookUI:war exploded" />
+    </root>
+  </artifact>
+</component>

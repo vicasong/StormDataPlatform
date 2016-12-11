@@ -30,20 +30,20 @@ public class Program {
         //因此，消息偏移量数据会存储在类似：<Zkroot>/<id>/partition_<partitionNumber>，注意Zkroot必须以/开始
         // TODO: 注意修改ZkRoot和id
         SpoutConfig kafkaConfig = new SpoutConfig(new ZkHosts(properties.getProperty("zookeeper.server")),
-                properties.getProperty("kafka.topic"),"/mystorm","access");
+                properties.getProperty("kafka.topic"),"/flume-zk","sum-log");
         //设置消息解析的Scheme，此处为String字符串
         kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
 
         // TODO: 指定并发度,Fields
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("kafka-spout", new KafkaSpout(kafkaConfig));
+        builder.setSpout("kafka-spout", new KafkaSpout(kafkaConfig), 1);
         builder.setBolt("load-bolt", new LoadBolt(),6).shuffleGrouping("kafka-spout");
         builder.setBolt("count-bolt", new CountBolt(),6).fieldsGrouping("load-bolt", new Fields("id"));
         builder.setBolt("summary-bolt", new SummaryBolt(), 1).shuffleGrouping("count-bolt");
 
         Config config = new Config();
         config.setMaxSpoutPending(10);
-        config.setNumWorkers(1);
+        config.setNumWorkers(3);
         config.setMaxTaskParallelism(10);
         config.put(Config.TOPOLOGY_TRIDENT_BATCH_EMIT_INTERVAL_MILLIS, 1000);
         config.put("mysql.url", properties.getProperty("mysql.url"));

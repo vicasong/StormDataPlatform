@@ -26,9 +26,13 @@ public class LogParser {
         AccessLog entity = gson.fromJson(json, AccessLog.class);
         String[] fields = entity.getRequest().split(" ");
         if(fields.length==3){
+            // correct format
             entity.setRequest_method(fields[0].toUpperCase());
             entity.setRequest_url(fields[1]);
             entity.setRequest_version(fields[2]);
+        }else{
+            // dirt data, drop it
+            return null;
         }
         return entity;
     }
